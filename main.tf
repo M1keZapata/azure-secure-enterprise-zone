@@ -11,7 +11,7 @@ provider "azurerm" {
   features {}
 }
 
-# Standard tags applied to every resource — see docs/tagging-strategy.md
+# Standard tags applied to every resource ï¿½ see docs/tagging-strategy.md
 locals {
   common_tags = {
     Environment = "Production"
@@ -45,3 +45,4 @@ resource "azurerm_resource_group" "monitoring" {
   location = "East US"
   tags     = local.common_tags
 }
+

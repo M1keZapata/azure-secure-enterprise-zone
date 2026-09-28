@@ -76,21 +76,25 @@ snet-servers
 Provides traffic filtering and security controls for server workloads hosted within the spoke network.
 
 ## NSG Rules
- 
-### allow-rdp-from-hub
- 
+
+**Name**: allow-rdp-from-hub
+
 **Purpose**:
 Allows Remote Desktop traffic from the hub network to server workloads in the spoke network.
- 
+
+
 **Source**:
 10.0.0.0/16
- 
+
+
 **Destination Port**: 
 3389
- 
+
+
 **Action**: 
 Allow
- 
+
+
 **Priority**: 
 100
 

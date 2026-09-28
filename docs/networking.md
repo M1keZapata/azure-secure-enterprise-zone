@@ -6,8 +6,7 @@ This environment uses a hub-and-spoke topology.
 
 ### Hub Network
 
-Purpose:
-
+**Purpose**:
 Provides centralized networking services for the Azure Secure Enterprise Platform.
 
 - Shared services
@@ -15,26 +14,24 @@ Provides centralized networking services for the Azure Secure Enterprise Platfor
 - Azure Bastion
 - Future shared connectivity
 
-VNet Name:
-
+**VNet Name**:
 vnet-hub-prod
 
-Address Space:
-
+**Address Space**:
 10.0.0.0/16
 
 ### Subnets
- 
 | Subnet | Address Range |
 |----------|----------------|
 | snet-management | 10.0.1.0/24 |
 | AzureBastionSubnet | 10.0.2.0/26 |
 | AzureFirewallSubnet | 10.0.3.0/26 |
 
+---
+
 ### Spoke Network
 
-Purpose:
-
+**Purpose**:
 Hosts workloads, virtual machines, and private service connectivity.
 
 - Workloads
@@ -42,20 +39,20 @@ Hosts workloads, virtual machines, and private service connectivity.
 - Application services
 - Private endpoints
 
-VNet Name:
-
+**VNet Name**:
 vnet-spoke-prod
 
-Address Space:
-
+**Address Space**:
 10.1.0.0/16
 
 ### Subnets
- 
 | Subnet | Address Range |
 |----------|----------------|
 | snet-servers | 10.1.1.0/24 |
 | snet-private-endpoints | 10.1.2.0/24 |
+
+
+
 
 ### Planned Connectivity
 
@@ -65,9 +62,21 @@ Spoke VNet
 
 VNet Peering will be used to enable communication.
 
+---
+
+## Network Security Group
+
+**Name**:
+nsg-servers-prod
+
+**Associated Subnet**:
+snet-servers
+
+**Purpose**:
+Provides traffic filtering and security controls for server workloads hosted within the spoke network.
+
 ## Future Components
 
 - Azure Firewall
 - Azure Bastion
 - Private Endpoints
-- Network Security Groups

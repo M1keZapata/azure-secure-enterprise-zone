@@ -13,7 +13,6 @@ This repository serves as both a technical portfolio project and a reference arc
 
 ---
 
-
 ## Architecture Goals
 
 The platform is designed around the following principles:
@@ -31,31 +30,35 @@ The platform is designed around the following principles:
 
 ## Resource Group Structure
 
+Actual resource groups are in East US and use the `gtg-<function>-prod` naming convention.
+
 | Resource Group | Purpose |
 |---|---|
-| `rg-hub-prod` | Central networking and connectivity resources |
-| `rg-spoke-prod` | Application, compute, and workload resources |
-| `rg-security-prod` | Security services and supporting resources |
-| `rg-monitoring-prod` | Centralized monitoring and logging resources |
+| `gtg-hub-prod` | Central networking and connectivity resources |
+| `gtg-spoke-prod` | Application, compute, and workload resources |
+| `gtg-security-prod` | Security services and supporting resources |
+| `gtg-monitoring-prod` | Centralized monitoring and logging resources |
 
 ---
 
 ## Project Roadmap
 
+Checked items are recorded complete in the latest user-supplied project assessment. Unchecked items are not confirmed complete; Bastion is intentionally deferred as noted below.
+
 ### Phase 1: Governance
 
 - [x] Create resource groups
 - [x] Define naming standards
-- [ ] Implement resource tags
-- [ ] Configure Azure policies
+- [x] Implement resource tags
+- [x] Configure Azure policies
 
 ### Phase 2: Networking
 
-- [ ] Deploy hub virtual network
-- [ ] Deploy spoke virtual network
-- [ ] Configure VNet peering
-- [ ] Implement network security groups
-- [ ] Deploy Azure Bastion
+- [x] Deploy hub virtual network
+- [x] Deploy spoke virtual network
+- [x] Configure VNet peering
+- [x] Implement network security groups
+- [ ] Deploy Azure Bastion — deferred for cost; `AzureBastionSubnet` is prepared at `10.0.2.0/26`, but the Bastion service is not deployed.
 
 ### Phase 3: Identity
 
@@ -107,31 +110,52 @@ The platform is designed around the following principles:
 - [ ] Automate Terraform planning
 - [ ] Automate approved Terraform deployments
 
-
 ---
 
 ## Current Status
 
+Progress snapshot: 2026-10-21. Of 35 roadmap tasks, 8 are complete, 1 is intentionally deferred for cost, and 26 across Phases 3–10 remain unverified. No additional task is asserted to be in progress.
+
 ### Completed
 
-- [x] Create resource group structure
+- [x] Create resource groups
 - [x] Define naming standards
+- [x] Implement resource tags
+- [x] Configure Azure policies
+- [x] Deploy hub virtual network
+- [x] Deploy spoke virtual network
+- [x] Configure VNet peering
+- [x] Implement network security groups
 
-### In Progress
+### Recorded Evidence
 
-- [ ] Define and apply tagging strategy
+- Resource groups: `gtg-hub-prod`, `gtg-spoke-prod`, `gtg-security-prod`, and `gtg-monitoring-prod` in East US.
+- Resource group tags: `CostCenter`, `Environment`, `ManagedBy`, `Owner`, and `Project` applied consistently.
+- Governance: a subscription-level policy requires the `Environment` tag on resource groups, with enforcement enabled.
+- Hub: `vnet-hub-prod` in `gtg-hub-prod`, address space `10.0.0.0/16`.
+- Spoke: `vnet-spoke-prod` in `gtg-spoke-prod`, address space `10.1.0.0/16`.
+- Peering: `hub-to-spoke` and `spoke-to-hub` connected and fully synchronized.
+- Network security: `nsg-servers-prod` associated with `snet-servers`, allowing TCP/3389 only from the hub range `10.0.0.0/16`.
+- Hub subnets: `snet-management` (`10.0.1.0/24`), `AzureBastionSubnet` (`10.0.2.0/26`), and `AzureFirewallSubnet` (`10.0.3.0/26`).
+- Spoke subnets include `snet-servers` and `snet-private-endpoints`.
 
-### Upcoming
+Prepared subnets do not establish deployment of Azure Bastion, Azure Firewall, or private endpoints.
 
-- [ ] Configure Azure Policy
-- [ ] Build hub-and-spoke networking
-- [ ] Configure Microsoft Entra ID and RBAC
-- [ ] Deploy compute resources
-- [ ] Deploy storage and private endpoints
-- [ ] Implement security controls
-- [ ] Configure monitoring and alerting
-- [ ] Enable Microsoft Sentinel
-- [ ] Deploy infrastructure with Terraform
-- [ ] Configure GitHub Actions## Technologies Used
+### Deferred for Cost
+
+- [ ] Deploy Azure Bastion. Its subnet is prepared, but the service itself is not deployed. This is an intentional deferral, not a completed roadmap task.
+
+### Next Work / Verification
+
+- Verify management VM / jump-host security, or proceed to Phase 3: Identity.
+- Validate remaining identity, compute, storage, security, monitoring, Sentinel, Terraform, and GitHub Actions work before marking it complete.
+
+### Progress Basis and Notion Alignment
+
+This snapshot reflects the newer project assessment screenshot supplied by the project owner, superseding the older README checklist. No live Azure verification was performed during this documentation update. Notion tracks the matching roadmap; synchronization is manual, not automatic. Tracker setup is separate from Azure deployment completion.
 
 ---
+
+## Technologies Used
+
+The project scope includes Azure networking, Microsoft Entra ID, Microsoft Defender for Cloud, Microsoft Sentinel, Azure Monitor, Log Analytics, KQL, Terraform, and GitHub Actions. Inclusion here describes project scope, not confirmation that every service is deployed.

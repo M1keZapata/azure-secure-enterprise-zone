@@ -145,14 +145,34 @@ Prepared subnets do not establish deployment of Azure Bastion, Azure Firewall, o
 
 - [ ] Deploy Azure Bastion. Its subnet is prepared, but the service itself is not deployed. This is an intentional deferral, not a completed roadmap task.
 
+<!--
 ### Next Work / Verification
 
 - Verify management VM / jump-host security, or proceed to Phase 3: Identity.
 - Validate remaining identity, compute, storage, security, monitoring, Sentinel, Terraform, and GitHub Actions work before marking it complete.
+-->
 
+<!--
 ### Progress Basis and Notion Alignment
 
 This snapshot reflects the newer project assessment screenshot supplied by the project owner, superseding the older README checklist. No live Azure verification was performed during this documentation update. Notion tracks the matching roadmap; synchronization is manual, not automatic. Tracker setup is separate from Azure deployment completion.
+-->
+
+---
+
+## Things I Would Correct Next Time
+
+Lessons learned and improvements for a future iteration of this project.
+
+- **Build with Terraform from day one.** Resources were first created by hand in the portal. Starting with Infrastructure as Code would make the environment repeatable, reviewable, and easier to rebuild or tear down.
+- **Set a budget and cost alerts before deploying anything.** Azure Bastion was deferred to control cost. A budget with alert thresholds up front would make cost decisions planned rather than reactive.
+- **Decide on remote-access design earlier.** The Bastion subnet exists, but the Bastion service does not. Choosing the access method (Bastion, just-in-time access, or a restricted jump host) at the design stage avoids leaving a gap in secure administration.
+- **Apply network security groups to every subnet that supports them.** The hub management subnet currently has no NSG or route table attached. Note that `AzureFirewallSubnet` does not support an NSG, and `AzureBastionSubnet` requires specific rules if one is attached.
+- **Define and test traffic flow before building.** Route tables and firewall rules should be planned alongside the subnets so that prepared subnets are not left idle.
+- **Collect evidence as work is completed.** Export resource inventories (for example with Azure CLI) and save dated screenshots, rather than reconstructing proof afterward.
+- **Keep documentation and tracking in sync.** The README checklist and the project tracker were updated manually and drifted apart. Pick one source of truth and update it in the same sitting as each change.
+- **Finish identity before compute.** Entra ID groups and role-based access control should exist before workloads are deployed, so that access is least-privilege from the start.
+- **Separate planned scope from deployed reality.** Mark each service as planned, deployed, or verified so that readers can see exactly what exists.
 
 ---
 

@@ -178,4 +178,29 @@ Lessons learned and improvements for a future iteration of this project.
 
 ## Technologies Used
 
-The project scope includes Azure networking, Microsoft Entra ID, Microsoft Defender for Cloud, Microsoft Sentinel, Azure Monitor, Log Analytics, KQL, Terraform, and GitHub Actions. Inclusion here describes project scope, not confirmation that every service is deployed.
+**Cloud and networking**
+
+![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=flat&logo=microsoftazure&logoColor=white)
+![Virtual Networks](https://img.shields.io/badge/Azure_VNet-0078D4?style=flat)
+![VNet Peering](https://img.shields.io/badge/VNet_Peering-0078D4?style=flat)
+![NSG](https://img.shields.io/badge/Network_Security_Groups-0078D4?style=flat)
+
+**Identity and security**
+
+![Microsoft Entra ID](https://img.shields.io/badge/Microsoft_Entra_ID-0078D4?style=flat)
+![Defender for Cloud](https://img.shields.io/badge/Defender_for_Cloud-0078D4?style=flat)
+![Microsoft Sentinel](https://img.shields.io/badge/Microsoft_Sentinel-0078D4?style=flat)
+
+**Monitoring**
+
+![Azure Monitor](https://img.shields.io/badge/Azure_Monitor-0078D4?style=flat)
+![Log Analytics](https://img.shields.io/badge/Log_Analytics-0078D4?style=flat)
+![KQL](https://img.shields.io/badge/KQL-0078D4?style=flat)
+
+**Infrastructure as Code and DevOps**
+
+![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat&logo=terraform&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
+
+This list describes project scope, not confirmation that every service is deployed.

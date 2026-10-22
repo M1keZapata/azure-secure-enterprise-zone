@@ -125,6 +125,7 @@ Of 35 roadmap tasks: 23 complete, 1 in progress, 1 deferred for cost, and 10 not
 | Infrastructure as Code | 1 / 3 | Modules and remote state not started |
 | DevOps | 0 / 4 | All tasks not started |
 
+<!--
 ### Recorded Evidence
 
 - Governance: resource groups `gtg-hub-prod`, `gtg-spoke-prod`, `gtg-security-prod`, and `gtg-monitoring-prod`; resource-group tags `CostCenter`, `Environment`, `ManagedBy`, `Owner`, and `Project`; subscription policy requiring the `Environment` tag on resource groups with enforcement enabled, per earlier owner-supplied assessment.
@@ -143,6 +144,8 @@ Of 35 roadmap tasks: 23 complete, 1 in progress, 1 deferred for cost, and 10 not
 - Alerts: `StorageAccountsWatchRule` is Enabled; Activity log signal, `Category=Administrative`, severity `4 - Verbose`, storage-account target type. Full scope is truncated; action group, firing, and delivery were not reviewed. List was filtered to Enabled.
 - Sentinel: enabled for project workspace `law-monitoring-prod`, separate from `GooderThanLAW`; overview shows 2 active connectors, 0 unhealthy connectors, one enabled analytics rule, and no incidents/automation rules found in the displayed view. Rule details and historical incident completeness are not established.
 - Terraform: owner explicitly confirms core-infrastructure deployment using Terraform. This audit did not independently inspect code, state, plan/apply output, or exact deployed scope. A `ManagedBy: Terraform` tag alone is not deployment proof. Modules, remote state, and DevOps automation are not asserted complete.
+
+-->
 
 ### Deferred for Cost
 

@@ -7,7 +7,7 @@ Hands-on Azure cloud platform project covering hub-and-spoke networking, Entra I
 
 Azure Secure Enterprise Zone is a hands-on cloud engineering and security project designed to simulate a real-world enterprise Azure environment.
 
-The goal is to demonstrate practical skills across `networking`, `identity`, `security`, `governance`, `monitoring`, `infrastructure as code`, and `DevOps automation`. This repository is a technical portfolio and reference architecture; planned scope is not a claim of completed implementation or production readiness.
+The goal is to demonstrate practical skills across `networking`, `identity`, `security`, `governance`, `monitoring`, `infrastructure as code`, and `DevOps automation`. This repository is a perpetual technical portfolio and reference architecture; planned scope is not a claim of completed implementation or production readiness.
 
 ---
 

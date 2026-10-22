@@ -37,6 +37,7 @@ Project resource groups are in East US and use the `gtg-<function>-prod` naming 
 
 ---
 
+<!--
 ## Project Roadmap
 
 Snapshot: 2026-10-21. Checked items record completion of the named implementation or review task, not resolution of every audit finding or successful end-to-end testing. Evidence comes from owner-supplied assessments, Azure portal screenshots, and explicit owner confirmation. No direct Azure API verification was performed during this documentation update.
@@ -125,7 +126,7 @@ Of 35 roadmap tasks: 23 complete, 1 in progress, 1 deferred for cost, and 10 not
 | Infrastructure as Code | 1 / 3 | Modules and remote state not started |
 | DevOps | 0 / 4 | All tasks not started |
 
-<!--
+
 ### Recorded Evidence
 
 - Governance: resource groups `gtg-hub-prod`, `gtg-spoke-prod`, `gtg-security-prod`, and `gtg-monitoring-prod`; resource-group tags `CostCenter`, `Environment`, `ManagedBy`, `Owner`, and `Project`; subscription policy requiring the `Environment` tag on resource groups with enforcement enabled, per earlier owner-supplied assessment.

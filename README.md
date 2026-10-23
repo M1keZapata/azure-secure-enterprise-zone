@@ -4,214 +4,202 @@
 Hands-on Azure cloud platform project covering hub-and-spoke networking, Entra ID, Defender for Cloud, Sentinel, Terraform, and planned GitHub Actions automation.
 
 ## Overview
-
-Azure Secure Enterprise Zone is a hands-on cloud engineering and security project designed to simulate a real-world enterprise Azure environment.
-
-The goal is to demonstrate practical skills across `networking`, `identity`, `security`, `governance`, `monitoring`, `infrastructure as code`, and `DevOps automation`. This repository is a perpetual technical portfolio and reference architecture; planned scope is not a claim of completed implementation or production readiness.
-
 ---
+This Azure enterprise-platform project brings networking, identity, compute, storage, security, monitoring, and infrastructure as code into one connected environment. The project demonstrates how these layers support each other rather than presenting them as unrelated exercises.
 
-## Architecture Goals
-
-- Zero Trust security model
-- Least-privilege access
-- Infrastructure as Code
-- Secure remote administration
-- Private service communication
-- Centralized monitoring and logging
-- Automated deployments
-- Enterprise-grade networking
-
+## Problem
 ---
+Swpype, a New York-based finance firm, need to establish an Azure foundation for internal workloads as they begin to expand across the tri-state area through a number of acquisitions. 
 
-## Resource Group Structure
+## Solution
+--- 
+We are to:
+- Separate shared connectivity from workload resources 
+- Organize access through identity groups
+- Configure private storage connectivity
+- Create a central place to review operational and security information. 
 
-Project resource groups are in East US and use the `gtg-<function>-prod` naming convention.
+This document describes accomplishments recorded in my repository as of October 21, 2026. Its evidence consists of documented Azure portal observations, earlier owner-supplied assessments, my deployment confirmation, and repository code. It is not a fresh live-Azure audit.
 
-| Resource Group | Purpose |
-|---|---|
-| `gtg-hub-prod` | Central networking and connectivity resources |
-| `gtg-spoke-prod` | Application, compute, and workload resources |
-| `gtg-security-prod` | Security services and supporting resources |
-| `gtg-monitoring-prod` | Centralized monitoring and logging resources |
+## Architecture at a glance
 
----
+My environment uses one hub virtual network and one spoke virtual network in East US. The hub organizes shared networking and management space; the spoke contains the Windows Server VM and private storage endpoint. Four resource groups separate networking, workloads, security, and monitoring.
 
-<!--
-## Project Roadmap
+| Area | Project resources |
+| --- | --- |
+| Shared networking | gtg-hub-prod; vnet-hub-prod, 10.0.0.0/16 |
+| Workloads | gtg-spoke-prod; vnet-spoke-prod, 10.1.0.0/16; Windows Server VM; storage account |
+| Security | gtg-security-prod; Azure Key Vault |
+| Monitoring | gtg-monitoring-prod; Log Analytics workspace with Microsoft Sentinel enabled |
+| Access management | Microsoft Entra ID groups and Azure role assignments |
+| Infrastructure code | Terraform definitions for the four resource groups and shared tags |
 
-Snapshot: 2026-10-21. Checked items record completion of the named implementation or review task, not resolution of every audit finding or successful end-to-end testing. Evidence comes from owner-supplied assessments, Azure portal screenshots, and explicit owner confirmation. No direct Azure API verification was performed during this documentation update.
+Repository architecture diagram
 
-### Phase 1: Governance
+## 1. Network architecture
+### What I achieved
 
-- [x] Create resource groups
-- [x] Define naming standards
-- [x] Implement resource tags
-- [x] Configure Azure policies
+- Established a hub-and-spoke layout using vnet-hub-prod and vnet-spoke-prod, with connected peering configured in both directions according to the recorded assessment. Peering is the connection that allows the two private networks to communicate.
+- Separated address space between the hub, 10.0.0.0/16, and spoke, 10.1.0.0/16.
+- Created dedicated hub subnet space for management, 10.0.1.0/24, and reserved service subnets named AzureBastionSubnet, 10.0.2.0/26, and AzureFirewallSubnet, 10.0.3.0/26. These are subnet-creation accomplishments, not claims that the named services were deployed.
+- Attached nsg-servers-prod to the server subnet. A network security group, or NSG, is a set of traffic rules applied to a network boundary.
+- Configured the allow-rdp-from-hub rule to permit TCP port 3389 from the hub address range at priority 100. This describes the rule I created, not an assertion that all other RDP sources are blocked.
 
-### Phase 2: Networking
+### Why this matters
 
-- [x] Deploy hub virtual network
-- [x] Deploy spoke virtual network
-- [x] Configure VNet peering
-- [x] Implement network security groups
-- [ ] Deploy Azure Bastion — deferred for cost; `AzureBastionSubnet` is prepared at `10.0.2.0/26`, but the service is not deployed.
+The design gives shared connectivity and workload hosting distinct places in the environment. Network layout, subnet organization, and traffic rules can be explained together as a single architecture instead of separate configuration tasks.
 
-### Phase 3: Identity
+### How I explain it in an interview
 
-- [x] Configure Microsoft Entra ID groups
-- [x] Implement role-based access control
-- [ ] Configure managed identities — task completion not verified.
+“I built a hub-and-spoke network with separate address ranges and bidirectional peering. I organized management and workload space into dedicated subnets and applied a server-subnet NSG with an explicit RDP allow rule for the hub.”
 
-### Phase 4: Compute
+## 2. Identity and access
+### What I achieved
 
-- [x] Deploy Windows Server virtual machine
-- [ ] Secure administrative access — in progress; private addressing and subnet NSG confirmed, but hub-only RDP restriction and a working management path are not validated.
-- [ ] Configure monitoring extensions — not started; portal lists zero extensions, with a warning about unavailable details while the VM is stopped.
+- Configured Microsoft Entra ID groups named Azure-Admins, Azure-Readers, and Azure-Security.
+- Assigned subscription Contributor to Azure-Admins.
+- Configured eligible, time-bound Reader access for Azure-Readers and eligible, time-bound Security Reader access for Azure-Security, as recorded in the project review. These statements describe the assignments, not completed user activations.
+- Reviewed a successful Azure Resource Manager sign-in showing Security Defaults enabled and the multifactor-authentication requirement satisfied. This is evidence from the sampled sign-in, not a claim that I deployed a custom Conditional Access policy.
+- Documented group membership, group ownership, and role assignments as separate parts of the access model.
 
-### Phase 5: Storage
+### Why this matters
 
-- [x] Deploy storage account
-- [x] Configure private endpoints — reviewed Blob endpoint configuration; client-side tests deferred.
-- [x] Disable public access — public network access disabled; separate anonymous Blob access setting not reviewed.
+Identity answers who can act; role-based access control, or RBAC, answers what they can do and where. Group-based assignments organize permissions around responsibilities such as administration, read-only review, and security review.
 
-### Phase 6: Security
+### How I explain it in an interview
 
-- [x] Deploy Azure Key Vault
-- [x] Enable Microsoft Defender for Cloud — foundational posture assessment confirmed, not full workload protection.
-- [x] Review Secure Score — baseline reviewed; recommendations not all remediated.
+“I organized Azure access around Entra ID groups and assigned different roles for administration, general reading, and security review. I also reviewed authentication evidence showing that an MFA requirement was satisfied.”
 
-### Phase 7: Monitoring
+## 3. Compute and workload hosting
+### What I achieved
 
-- [x] Create Log Analytics workspace
-- [x] Configure Azure Monitor — observed diagnostic settings; comprehensive coverage and ingestion not fully validated.
-- [x] Build KQL queries
-- [x] Create alerts — enabled rule confirmed; firing and notification delivery not tested.
+- Deployed vm-admin-prod-01, a Windows Server virtual machine, in gtg-spoke-prod in East US.
+- Placed the VM in vnet-spoke-prod/snet-servers with private IP address 10.1.1.4.
+- Established a VM configuration with no public IP displayed in the reviewed evidence.
+- Recorded its Generation V2, x64 configuration and reviewed size of 1 vCPU and 2 GiB RAM.
+- Captured the VM's stopped/deallocated state in the project snapshot.
 
-### Phase 8: Security Operations
+### Why this matters
 
-- [x] Enable Microsoft Sentinel
-- [ ] Create detection rules — completion unverified. Sentinel overview displays one enabled analytics rule, but its identity, logic, and origin were not inspected. Owner reports no Defender custom detections created.
-- [ ] Generate test incidents — owner confirms not completed.
+The VM connects the network design to a real compute resource. This accomplishment is the Windows Server hosting foundation; it does not claim the video's two-Ubuntu-VM web application and database deployment.
 
-### Phase 9: Infrastructure as Code
+### How I explain it in an interview
 
-- [ ] Build Terraform modules
-- [x] Deploy core infrastructure — owner confirms Terraform deployment; code/state/apply evidence not independently reviewed in this audit.
-- [ ] Configure remote state
+“I deployed a Windows Server VM inside the workload spoke, assigned it a private network address, and reviewed its placement and configuration without giving it a public IP.”
 
-### Phase 10: DevOps
+## 4. Storage and private connectivity
+### What I achieved
 
-- [ ] Configure GitHub Actions
-- [ ] Automate Terraform formatting and validation
-- [ ] Automate Terraform planning
-- [ ] Automate approved Terraform deployments
+- Deployed the StorageV2 account stsecureplatprod in gtg-spoke-prod.
+- Disabled the storage account's public network access.
+- Configured the Blob private endpoint pe-stsecureplatprod in the spoke's snet-private-endpoints subnet, using private IP 10.1.2.4. The reviewed endpoint showed Succeeded and Approved.
+- Associated the endpoint with the private DNS zone privatelink.blob.core.windows.net and zone group default.
+- Configured a completed private DNS zone link to vnet-spoke-prod and reviewed the displayed hostname-to-private-IP mapping. DNS is the naming system that translates a service name into an address.
 
----
+### Why this matters
 
-## Current Status
+These settings connect the storage service to the private network design and disable its public network entry point. The accomplishment is the endpoint and DNS configuration observed in Azure, not a claim of a completed client data-transfer test.
 
-Of 35 roadmap tasks: 23 complete, 1 in progress, 1 deferred for cost, and 10 not started or unverified.
+### How I explain it in an interview
 
-| Phase | Complete / Total | Remaining status |
-|---|---|---|
-| Governance | 4 / 4 | None |
-| Networking | 4 / 5 | Bastion deferred for cost |
-| Identity | 2 / 3 | Managed-identity task unverified |
-| Compute | 1 / 3 | Administrative access in progress; monitoring extensions not started |
-| Storage | 3 / 3 | Client-side validation deferred separately |
-| Security | 3 / 3 | Hardening and workload-protection gaps recorded separately |
-| Monitoring | 4 / 4 | Coverage, query quality, and notification validation gaps recorded separately |
-| Security Operations | 1 / 3 | Detection-rule completion unverified; test incidents not generated |
-| Infrastructure as Code | 1 / 3 | Modules and remote state not started |
-| DevOps | 0 / 4 | All tasks not started |
+“I configured Blob Storage with public network access disabled, an approved private endpoint in the workload spoke, and a private DNS zone linked to that spoke.”
 
+## 5. Security services and posture assessment
+### What I achieved
 
-### Recorded Evidence
+- Deployed kv-security-prod01, a Standard-tier Azure Key Vault, in gtg-security-prod.
+- Configured the vault to use the Azure RBAC permission model and confirmed soft delete was enabled.
+- Enabled and reviewed Defender for Cloud foundational security-posture assessment for the project subscription.
+- Reviewed a recorded Secure Score of 46%, 21 assessed resources, and 24 recommendations. These are historical assessment figures, not current live measurements or a compliance certification.
+- Examined the Microsoft cloud security benchmark view separately from Secure Score, recording 47 of 63 controls passed in that view.
 
-- Governance: resource groups `gtg-hub-prod`, `gtg-spoke-prod`, `gtg-security-prod`, and `gtg-monitoring-prod`; resource-group tags `CostCenter`, `Environment`, `ManagedBy`, `Owner`, and `Project`; subscription policy requiring the `Environment` tag on resource groups with enforcement enabled, per earlier owner-supplied assessment.
-- Networking: hub `vnet-hub-prod` (`10.0.0.0/16`), spoke `vnet-spoke-prod` (`10.1.0.0/16`), and connected bidirectional peering per earlier assessment. Hub subnets include `snet-management` (`10.0.1.0/24`), `AzureBastionSubnet` (`10.0.2.0/26`), and `AzureFirewallSubnet` (`10.0.3.0/26`). Prepared subnets do not prove Bastion or Firewall deployment.
-- Network security: `nsg-servers-prod` is attached to `snet-servers`. Rule `allow-rdp-from-hub` allows TCP/3389 from `10.0.0.0/16` at priority 100. Default `AllowVnetInBound` at priority 65000 still allows all ports/protocols for matching VirtualNetwork traffic; the custom allow alone does not enforce hub-only RDP. This corrects earlier README wording.
-- Identity: `Azure-Admins` has subscription Contributor; the everyday lab account is its sole reviewed direct member and also has direct permanent subscription Owner. `Azure-Readers` has eligible time-bound Reader, zero members, and one owner. `Azure-Security` has eligible time-bound Security Reader; zero members and sole ownership were owner-reported. Group ownership is distinct from membership.
-- Authentication: a sampled Azure Resource Manager sign-in shows Security Defaults Enabled, Success, and Require multifactor authentication Satisfied. Earlier details show Previously satisfied, not proof of a fresh challenge or the original authentication method.
-- Compute: `vm-admin-prod-01` in `gtg-spoke-prod`, East US; Windows Server image publisher `MicrosoftWindowsServer`, offer `WindowsServer`; exact version not visible. Generation V2, x64, Standard F1als v7, 1 vCPU, 2 GiB RAM; stopped/deallocated; private IP `10.1.1.4` in `vnet-spoke-prod/snet-servers`; no public IP displayed.
-- Storage: StorageV2 account `stsecureplatprod` in `gtg-spoke-prod`, East US; public network access Disabled. Blob private endpoint `pe-stsecureplatprod` is Succeeded and Approved in `vnet-spoke-prod/snet-private-endpoints`, private IP `10.1.2.4`.
-- Private DNS: endpoint associated with `privatelink.blob.core.windows.net`, zone group `default`; displayed private hostname maps to `10.1.2.4`. Zone link to `vnet-spoke-prod` is Completed. Client-side resolution and authorized Blob operations were deferred, not passed.
-- Key Vault: `kv-security-prod01` in `gtg-security-prod`, East US; Standard tier; Azure RBAC permission model; soft-delete Enabled; purge protection Disabled; public network access Enabled from all networks; no private endpoint configured. Deployment is complete, hardening is not asserted complete.
-- Defender for Cloud: one subscription, 21 assessed resources; Secure Score 46%; 24 recommendations (1 high, 0 medium, 23 low); workload-protection coverage displayed as 0%. Microsoft cloud security benchmark shows 47 of 63 controls passed, separately from Secure Score and not a certification. Dashboard warns of potentially limited visibility; zero alerts/attack paths do not establish absence of threats.
-- Log Analytics: `law-monitoring-prod` in `gtg-monitoring-prod`, East US; Active; Pay-as-you-go; operational issues OK.
-- Azure Monitor: diagnostics inventory shows Enabled for `stsecureplatprod` parent resource, `kv-security-prod01`, and `law-monitoring-prod`. Displayed setting `gtg-AllAzure` selects `allLogs` and `AllMetrics` and targets `law-monitoring-prod`; its source resource is not identified in the screenshot. Storage child-service diagnostics and project NSG/NIC diagnostics are shown Disabled.
-- KQL: workspace query history shows executed AzureActivity exploration with nonzero results on October 2–3, 2026. Historical availability is demonstrated, not current ingestion. The displayed `distinct OperationNameValue` followed by grouped `count()` counts each unique name once; remove `distinct` to count event frequency. A historical `AZKVAuditLogs | take 5` returned zero rows, not proof of Key Vault ingestion.
-- Alerts: `StorageAccountsWatchRule` is Enabled; Activity log signal, `Category=Administrative`, severity `4 - Verbose`, storage-account target type. Full scope is truncated; action group, firing, and delivery were not reviewed. List was filtered to Enabled.
-- Sentinel: enabled for project workspace `law-monitoring-prod`, separate from `GooderThanLAW`; overview shows 2 active connectors, 0 unhealthy connectors, one enabled analytics rule, and no incidents/automation rules found in the displayed view. Rule details and historical incident completeness are not established.
-- Terraform: owner explicitly confirms core-infrastructure deployment using Terraform. This audit did not independently inspect code, state, plan/apply output, or exact deployed scope. A `ManagedBy: Terraform` tag alone is not deployment proof. Modules, remote state, and DevOps automation are not asserted complete.
+### Why this matters
 
--->
+Key Vault adds a dedicated security resource to the platform. Defender for Cloud adds a way to inspect configuration posture and discuss specific findings, rather than treating deployment alone as proof that an environment is secure.
 
-### Deferred for Cost
+### How I explain it in an interview
 
-- Deploy Azure Bastion: prepared subnet only; service not deployed.
+“I deployed Key Vault using Azure RBAC and reviewed Defender for Cloud's posture assessment. I can explain the recorded Secure Score and recommendations as assessment results rather than present them as proof of complete protection.”
 
-<!--
-### Next Work / Verification
+## 6. Monitoring and operational visibility
+### What I achieved
 
-- Complete secure administrative access; inspect default NSG allowances and validate the intended management path before changing access.
-- Configure monitoring extensions and verify collection where required.
-- Identify the existing Sentinel analytics rule before claiming detection-rule creation; generate controlled test incidents when ready.
-- Verify the managed-identity task separately from service-created identities.
-- Complete Terraform modules, remote state, and DevOps automation.
-- Revisit storage client-side DNS/data tests, diagnostic coverage, notification delivery, and Key Vault hardening.
--->
+- Created law-monitoring-prod in gtg-monitoring-prod as the central Log Analytics workspace.
+- Reviewed enabled diagnostic-setting entries for the storage-account parent resource, Key Vault, and the workspace.
+- Inspected a diagnostic setting named gtg-AllAzure that selected allLogs and AllMetrics and targeted law-monitoring-prod.
+- Built and executed Kusto Query Language, or KQL, queries to explore AzureActivity records. Query history recorded nonzero results on October 2–3, 2026.
+- Created an enabled activity-log alert named StorageAccountsWatchRule, configured for Administrative events and a storage-account target type. This records alert-rule configuration rather than tested notification delivery.
 
-<!--
-### Progress Basis and Notion Alignment
+### Why this matters
 
-Aligned to the task statuses agreed during the 2026-10-21 roadmap review and recorded in Notion. Completion of a deployment/configuration/review task is separate from end-to-end validation or remediation. Governance/networking include earlier owner-supplied assessments; later findings use portal screenshots; Terraform deployment is owner-confirmed. No live Azure API verification occurred during this README update. Synchronization remains manual.
--->
+The workspace provides a central location for log analysis. KQL adds a practical way to investigate recorded activity, while the configured alert demonstrates how selected administrative events can be represented as an operational monitoring rule.
 
----
+### How I explain it in an interview
 
-## Things I Would Correct Next Time
+“I established a Log Analytics workspace, reviewed diagnostic settings, queried Azure activity records with KQL, and configured an activity-log alert for storage-account administration.”
 
-Lessons learned and improvements for a future iteration of this project.
+## 7. Security operations
+### What I achieved
 
-- **Build with Terraform from day one.** Resources were first created by hand in the portal. Starting with Infrastructure as Code would make the environment repeatable, reviewable, and easier to rebuild or tear down. Core deployment is now owner-confirmed as Terraform-based; modularization and remote state remain unfinished.
-- **Set a budget and cost alerts before deploying anything.** Azure Bastion was deferred to control cost. A budget with alert thresholds up front would make cost decisions planned rather than reactive.
-- **Decide on remote-access design earlier.** The Bastion subnet exists, but the Bastion service does not. Choosing the access method at the design stage avoids leaving a gap in secure administration.
-- **Apply network security groups to every subnet that supports them.** The earlier assessment recorded no NSG or route table on the hub management subnet. Review service-specific subnet requirements before adding controls.
-- **Define and test traffic flow before building.** Route tables and firewall rules should be planned alongside the subnets so that prepared subnets are not left idle. Review default NSG rules: a narrow allow does not implicitly deny other sources.
-- **Collect evidence as work is completed.** Export inventories and save dated screenshots, configuration outputs, and deployment records rather than reconstructing proof afterward.
-- **Keep documentation and tracking in sync.** The README checklist and project tracker were updated manually and drifted apart. Update them in the same sitting as each change.
-- **Finish identity before compute.** Group-based RBAC exists, but the everyday lab account retains permanent Owner. Implementation is not proof of least-privilege operation.
-- **Separate planned scope from deployed reality.** Distinguish task completion, owner confirmation, observed configuration, successful tests, and unresolved findings.
+- Enabled Microsoft Sentinel on the project workspace law-monitoring-prod.
+- Reviewed the Sentinel overview showing two active connectors and zero unhealthy connectors in the displayed snapshot.
+- Established Sentinel as the security-operations component associated with the project's central logging workspace.
 
----
+### Why this matters
 
-## Technologies Used
+This connects operational logging with a dedicated security-analysis platform. It gives the project a security-operations foundation alongside its networking, identity, and resource-management layers.
 
-**Cloud and networking**
+### How I explain it in an interview
 
-![Microsoft Azure](https://img.shields.io/badge/Microsoft_Azure-0078D4?style=flat&logo=microsoftazure&logoColor=white)
-![Virtual Networks](https://img.shields.io/badge/Azure_VNet-0078D4?style=flat)
-![VNet Peering](https://img.shields.io/badge/VNet_Peering-0078D4?style=flat)
-![NSG](https://img.shields.io/badge/Network_Security_Groups-0078D4?style=flat)
+“I enabled Sentinel on the project's Log Analytics workspace and reviewed the connector status as part of establishing the security-operations foundation.”
 
-**Identity and security**
+## 8. Infrastructure as code
+### What I achieved
 
-![Microsoft Entra ID](https://img.shields.io/badge/Microsoft_Entra_ID-0078D4?style=flat)
-![Defender for Cloud](https://img.shields.io/badge/Defender_for_Cloud-0078D4?style=flat)
-![Microsoft Sentinel](https://img.shields.io/badge/Microsoft_Sentinel-2088FF?style=flat)
+- Used Terraform for core-infrastructure deployment, as confirmed in the October 21 project review.
+- Committed Terraform configuration defining the four resource groups: gtg-hub-prod, gtg-spoke-prod, gtg-security-prod, and gtg-monitoring-prod.
+- Defined shared tags once in local.common_tags and referenced that common map from each resource-group definition.
+- Recorded Environment, Owner, Project, ManagedBy, and CostCenter in the common tag configuration.
+- Kept the resource-group configuration in GitHub so the declared foundation can be read and reviewed as code.
 
-**Monitoring**
+### Why this matters
 
-![Azure Monitor](https://img.shields.io/badge/Azure_Monitor-0078D4?style=flat)
-![Log Analytics](https://img.shields.io/badge/Log_Analytics-0078D4?style=flat)
-![KQL](https://img.shields.io/badge/KQL-0078D4?style=flat)
+Terraform expresses infrastructure as text instead of relying solely on portal actions. The committed main.tf provides concrete evidence of resource-group and tag definitions; the scope of this code claim is those definitions, not the entire deployed architecture or a CI/CD pipeline.
 
-**Infrastructure as Code and DevOps**
+### How I explain it in an interview
 
-![Terraform](https://img.shields.io/badge/Terraform-844FBA?style=flat&logo=terraform&logoColor=white)
-![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat&logo=githubactions&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)
+“I used Terraform for my core infrastructure and committed the four resource-group definitions with a shared tagging map. The code makes that foundation explicit and reviewable.”
 
-This list describes project scope, not confirmation that every service or automation is implemented. GitHub Actions remains planned.
+## 9. Governance and resource organization
+### What I achieved
+
+- Organized resources into distinct networking, workload, security, and monitoring resource groups.
+- Established the gtg-<function>-prod resource-group naming pattern and documented naming standards.
+- Applied resource-group tags for CostCenter, Environment, ManagedBy, Owner, and Project.
+- Configured a subscription policy requiring the Environment tag on resource groups, with enforcement enabled according to the recorded assessment.
+- Maintained supporting documentation for networking, identity, compute, storage, security, monitoring, naming, and tagging in the repository.
+
+### Why this matters
+
+Naming makes resource purpose easier to recognize. Tags attach ownership and business context. Policy adds an enforceable organization rule rather than relying entirely on someone remembering the naming and tagging guide. CostCenter tagging supplies organizational context; it is not a claim of measured savings or a deployed cost dashboard.
+
+### How I explain it in an interview
+
+“I organized the platform into functional resource groups, documented naming and tagging standards, and configured a policy requiring an Environment tag on resource groups.”
+
+## How the accomplishments connect
+
+The resource-group structure organizes the platform. The hub and spoke establish network boundaries and connectivity. The Windows Server VM occupies the workload network, while the storage private endpoint and DNS configuration connect a data service to that private layout.
+
+Entra ID groups and role assignments organize access to Azure resources. Key Vault adds a dedicated security service, while Defender for Cloud supplies posture-assessment information. Log Analytics, KQL, the configured alert, and Sentinel establish complementary operational and security visibility. Terraform captures the resource-group foundation and common tags in code.
+
+Together, these accomplishments give me one connected project to discuss across cloud administration, networking, access management, security assessment, monitoring, and infrastructure as code.
+
+## Evidence links
+
+- Project repository and recorded October 21 assessment — the README source contains the detailed assessment, including content stored inside HTML comments.
+- Terraform resource-group definitions and common tags
+- Supporting project documentation
+- Video used to structure the companion document
+
+Evidence note: the links above track the repository's main branch and may change after this snapshot. Historical metrics and configuration observations in this document refer to the recorded project review, not continuous verification.

@@ -49,9 +49,9 @@ Repository architecture diagram
 
 The design gives shared connectivity and workload hosting distinct places in the environment. Network layout, subnet organization, and traffic rules can be explained together as a single architecture instead of separate configuration tasks.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I built a hub-and-spoke network with separate address ranges and bidirectional peering. I organized management and workload space into dedicated subnets and applied a server-subnet NSG with an explicit RDP allow rule for the hub.”
+“I built a hub-and-spoke network with separate address ranges and bidirectional peering. I organized management and workload space into dedicated subnets and applied a server-subnet NSG with an explicit RDP allow rule for the hub.” -->
 
 ## 2. Identity and access
 ### What I achieved
@@ -66,9 +66,9 @@ The design gives shared connectivity and workload hosting distinct places in the
 
 Identity answers who can act; role-based access control, or RBAC, answers what they can do and where. Group-based assignments organize permissions around responsibilities such as administration, read-only review, and security review.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I organized Azure access around Entra ID groups and assigned different roles for administration, general reading, and security review. I also reviewed authentication evidence showing that an MFA requirement was satisfied.”
+“I organized Azure access around Entra ID groups and assigned different roles for administration, general reading, and security review. I also reviewed authentication evidence showing that an MFA requirement was satisfied.” -->
 
 ## 3. Compute and workload hosting
 ### What I achieved
@@ -83,9 +83,9 @@ Identity answers who can act; role-based access control, or RBAC, answers what t
 
 The VM connects the network design to a real compute resource. This accomplishment is the Windows Server hosting foundation; it does not claim the video's two-Ubuntu-VM web application and database deployment.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I deployed a Windows Server VM inside the workload spoke, assigned it a private network address, and reviewed its placement and configuration without giving it a public IP.”
+“I deployed a Windows Server VM inside the workload spoke, assigned it a private network address, and reviewed its placement and configuration without giving it a public IP.” -->
 
 ## 4. Storage and private connectivity
 ### What I achieved
@@ -100,9 +100,9 @@ The VM connects the network design to a real compute resource. This accomplishme
 
 These settings connect the storage service to the private network design and disable its public network entry point. The accomplishment is the endpoint and DNS configuration observed in Azure, not a claim of a completed client data-transfer test.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I configured Blob Storage with public network access disabled, an approved private endpoint in the workload spoke, and a private DNS zone linked to that spoke.”
+“I configured Blob Storage with public network access disabled, an approved private endpoint in the workload spoke, and a private DNS zone linked to that spoke.” -->
 
 ## 5. Security services and posture assessment
 ### What I achieved
@@ -117,9 +117,9 @@ These settings connect the storage service to the private network design and dis
 
 Key Vault adds a dedicated security resource to the platform. Defender for Cloud adds a way to inspect configuration posture and discuss specific findings, rather than treating deployment alone as proof that an environment is secure.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I deployed Key Vault using Azure RBAC and reviewed Defender for Cloud's posture assessment. I can explain the recorded Secure Score and recommendations as assessment results rather than present them as proof of complete protection.”
+“I deployed Key Vault using Azure RBAC and reviewed Defender for Cloud's posture assessment. I can explain the recorded Secure Score and recommendations as assessment results rather than present them as proof of complete protection.” -->
 
 ## 6. Monitoring and operational visibility
 ### What I achieved
@@ -134,9 +134,9 @@ Key Vault adds a dedicated security resource to the platform. Defender for Cloud
 
 The workspace provides a central location for log analysis. KQL adds a practical way to investigate recorded activity, while the configured alert demonstrates how selected administrative events can be represented as an operational monitoring rule.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I established a Log Analytics workspace, reviewed diagnostic settings, queried Azure activity records with KQL, and configured an activity-log alert for storage-account administration.”
+“I established a Log Analytics workspace, reviewed diagnostic settings, queried Azure activity records with KQL, and configured an activity-log alert for storage-account administration.” -->
 
 ## 7. Security operations
 ### What I achieved
@@ -149,9 +149,9 @@ The workspace provides a central location for log analysis. KQL adds a practical
 
 This connects operational logging with a dedicated security-analysis platform. It gives the project a security-operations foundation alongside its networking, identity, and resource-management layers.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I enabled Sentinel on the project's Log Analytics workspace and reviewed the connector status as part of establishing the security-operations foundation.”
+“I enabled Sentinel on the project's Log Analytics workspace and reviewed the connector status as part of establishing the security-operations foundation.” -->
 
 ## 8. Infrastructure as code
 ### What I achieved
@@ -166,9 +166,9 @@ This connects operational logging with a dedicated security-analysis platform. I
 
 Terraform expresses infrastructure as text instead of relying solely on portal actions. The committed main.tf provides concrete evidence of resource-group and tag definitions; the scope of this code claim is those definitions, not the entire deployed architecture or a CI/CD pipeline.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I used Terraform for my core infrastructure and committed the four resource-group definitions with a shared tagging map. The code makes that foundation explicit and reviewable.”
+“I used Terraform for my core infrastructure and committed the four resource-group definitions with a shared tagging map. The code makes that foundation explicit and reviewable.” -->
 
 ## 9. Governance and resource organization
 ### What I achieved
@@ -183,9 +183,9 @@ Terraform expresses infrastructure as text instead of relying solely on portal a
 
 Naming makes resource purpose easier to recognize. Tags attach ownership and business context. Policy adds an enforceable organization rule rather than relying entirely on someone remembering the naming and tagging guide. CostCenter tagging supplies organizational context; it is not a claim of measured savings or a deployed cost dashboard.
 
-### How I explain it in an interview
+<!-- ### How I explain it in an interview
 
-“I organized the platform into functional resource groups, documented naming and tagging standards, and configured a policy requiring an Environment tag on resource groups.”
+“I organized the platform into functional resource groups, documented naming and tagging standards, and configured a policy requiring an Environment tag on resource groups.” -->
 
 ## How the accomplishments connect
 

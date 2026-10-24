@@ -187,7 +187,7 @@ Naming makes resource purpose easier to recognize. Tags attach ownership and bus
 
 “I organized the platform into functional resource groups, documented naming and tagging standards, and configured a policy requiring an Environment tag on resource groups.” -->
 
-## How the accomplishments connect
+<!-- ## How the accomplishments connect
 
 The resource-group structure organizes the platform. The hub and spoke establish network boundaries and connectivity. The Windows Server VM occupies the workload network, while the storage private endpoint and DNS configuration connect a data service to that private layout.
 
@@ -202,4 +202,4 @@ Together, these accomplishments give me one connected project to discuss across 
 - Supporting project documentation
 - Video used to structure the companion document
 
-Evidence note: the links above track the repository's main branch and may change after this snapshot. Historical metrics and configuration observations in this document refer to the recorded project review, not continuous verification.
+Evidence note: the links above track the repository's main branch and may change after this snapshot. Historical metrics and configuration observations in this document refer to the recorded project review, not continuous verification. -->
